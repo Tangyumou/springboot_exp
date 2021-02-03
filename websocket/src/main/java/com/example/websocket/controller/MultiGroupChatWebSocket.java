@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * websocket实现多个群聊
+ */
 @Slf4j
 @ServerEndpoint("/chatroom/{roomId}/{userId}")
 @Component
