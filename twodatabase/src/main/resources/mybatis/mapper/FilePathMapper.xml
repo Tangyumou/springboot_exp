@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tqw.twodatabase.mapper.FilePathMapper">
+    <select id="findFilePathByID" parameterType="String" resultType="cn.tqw.twodatabase.pojo.FilePath">
+        select ID,name,hospital,keShi,STLPath from FilePath where ID=#{ID}
+    </select>
+</mapper>

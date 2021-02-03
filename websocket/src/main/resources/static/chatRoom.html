@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://s3.pstatp.com/cdn/expire-1-M/jquery/3.1.1/jquery.min.js"></script>
+    <style>
+        #chatBox{
+            width:600px;
+            height:200px;
+            overflow: auto;
+            border: 1px solid gray;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div><span>用户ID：</span><input id="userId"><button id="enter" >进入聊天室</button><button id="leave" disabled="disabled">离开</button></div>
+    <p>用户ID：<span id="userIdSpan"></span></p>
+    <div id="chatBox"></div>
+    <div><input id="msg"><button id="send" disabled="disabled">发送</button></div>
+    <script>
+        let ws = null;
+        let userId;
+        $("#enter").click(function () {
+
+            userId = $("#userId").val();
+            ws = new WebSocket("ws:127.0.0.1:8080/chatroom/"+userId);
+            ws.onopen = function () {
+                console.log("用户"+userId+"进入聊天室");
+                $("#userIdSpan").text(userId);
+                setButtonStatus(true);
+
+            }
+            ws.onmessage = function (e) {
+                showMessage(e.data,"black");
+            }
+            ws.onclose = function () {
+                console.log("用户"+userId+"离开聊天室");
+            }
+        })
+        $("#leave").click(function () {
+            if(ws!==null) {
+                ws.close();
+                ws = null;
+            }
+            setButtonStatus(false);
+        })
+        $("#send").click(function () {
+            let msg = userId+":"+ $("#msg").val();
+            showMessage(msg,"green");
+            ws.send($("#msg").val());
+
+        })
+        // 设置按钮状态
+        function setButtonStatus(connected) {
+            $("#enter").attr("disabled",connected);
+            $("#leave").attr("disabled",!connected);
+            $("#send").attr("disabled",!connected);
+        }
+        // 显示消息
+        function showMessage(msg,color) {
+            let p = document.createElement("p");
+            let node=document.createTextNode(msg);
+            p.appendChild(node);
+            p.style.color = color;
+            let chatBox = document.getElementById("chatBox");
+            chatBox.appendChild(p)
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>

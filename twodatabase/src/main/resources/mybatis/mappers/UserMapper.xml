@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.tqw.twodatabase.mappers.UserMapper">
+    <resultMap id="userMap" type="User">
+        <id column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="user_password" property="userPassword"/>
+        <result column="user_email" property="userEmail"/>
+        <result column="user_phone" property="userPhone"/>
+        <result column="user_hospital" property="userHospital"/>
+        <result column="user_type" property="userType"/>
+        <result column="user_hp_country" property="userHpCountry"/>
+        <result column="user_country" property="userCountry"/>
+        <result column="user_img" property="userImg"/>
+        <result column="user_rt" property="userRt"/>
+    </resultMap>
+    <select id="findUser" parameterType="cn.tqw.twodatabase.pojo.User" resultMap="userMap">
+        select * from r_user
+        <where>
+            <if test="userEmail!=null">
+                and user_email=#{userEmail}
+            </if>
+            <if test="userPassword!=null">
+                and user_password=#{userPassword}
+            </if>
+        </where>
+    </select>
+
+    <select id="findAllUser" resultMap="userMap">
+        select * from r_user
+    </select>
+    <insert id="addUser" parameterType="cn.tqw.twodatabase.pojo.User">
+        insert into r_user (user_email) values(#{userEmail})
+    </insert>
+    <update id="updateUser" parameterType="cn.tqw.twodatabase.pojo.User">
+        update r_user
+        <set>
+            <if test="userName!=null">
+                user_name=#{userName},
+            </if>
+            <if test="userPassword!=null">
+                user_password=#{userPassword},
+            </if>
+            <if test="userType!=null">
+                user_type=#{userType},
+            </if>
+        </set>
+        where user_email=#{userEmail}
+    </update>
+
+    <update id="updateHospitalByEmail">
+         update r_user
+        <set>
+            <if test="hname!=null">
+                user_hospital=#{hname},
+            </if>
+            <if test="cname!=null">
+                user_hp_country=#{cname},
+            </if>
+        </set>
+        where user_email=#{userEmail}
+    </update>
+
+    <update id="updateCountryByEmail">
+        update r_user
+        <set>
+            <if test="cname!=null">
+                user_country=#{cname},
+            </if>
+        </set>
+        where user_email=#{userEmail}
+    </update>
+    <update id="updateUserImgByUserId">
+        update r_user set user_img=#{userImg} where user_id=#{userId}
+    </update>
+
+</mapper>

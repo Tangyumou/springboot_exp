@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>chat</title>
+    <style>
+        #console{
+            width:300px;
+            height:200px;
+            border: 1px solid black;
+            overflow: auto;
+        }
+    </style>
+    <script>
+        let ws = null;
+        // 设置按键
+        function setConnected(connected) {
+            document.getElementById('connect').disabled = connected;
+            document.getElementById('disconnect').disabled = !connected;
+            document.getElementById('echo').disabled = !connected;
+        }
+        // 开始建立连接
+        function connect() {
+
+            if ('WebSocket' in window) {
+                ws = new WebSocket("ws://192.168.2.120:8080/WebSocket/Websocket");
+            } else {
+                alert('Not support websocket')
+            }
+            ws.onopen = function () {
+                setConnected(true);
+            }
+            ws.onmessage = function (e) {
+                log("接收： " + e.data);
+            }
+            ws.onclose = function () {
+                setConnected(false);
+            }
+        }
+        // 断开连接时
+        function disconnect() {
+            if(ws != null) {
+                ws.close();
+                ws = null;
+            }
+            setConnected(false);
+        }
+        //
+        function echo() {
+            if(ws != null) {
+                let messsage = document.getElementById("message").value;
+                log("发送： " + messsage);
+                ws.send(messsage);
+            }else{
+                alert("websocket连接没有建立");
+            }
+        }
+        function log(message) {
+            let console = document.getElementById('console');
+            let p = document.createElement('p');
+            p.style.wordWrap = 'break-word';
+            p.appendChild(document.createTextNode(message));
+            console.appendChild(p);
+            while (console.childNodes.length > 25) {
+                console.removeChild(console.firstChild);
+            }
+            console.scrollTop = console.scrollHeight;
+        }
+
+    </script>
+</head>
+<body>
+    <p>WebSocket Demo</p>
+    <input id="connect" type="button" value="连接" onclick="connect()"/>
+    <input id="disconnect" type="button" value="断开连接" disabled="disabled" onclick="disconnect()">
+    <br>
+    <textarea id="message" style="width: 350px"></textarea>
+    <br>
+    <input id="echo" type="button" onclick="echo()" value="发送" disabled="disabled">
+    <div id="console"></div>
+</body>
+</html>
