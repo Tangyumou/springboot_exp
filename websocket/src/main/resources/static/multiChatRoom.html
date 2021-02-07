@@ -41,7 +41,10 @@
 
         }
         ws.onmessage = function (e) {
-            showMessage(e.data,"black");
+            let msg = e.data;
+            showMessage(msg,"black");
+
+            console.log(msg);
         }
         ws.onclose = function () {
             console.log(roomId+"房间,用户"+userId+"离开聊天室");
